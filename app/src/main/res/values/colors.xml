@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="verySlow">#21a700</color>
+    <color name="slow">#0094a7</color>
+    <color name="normal">#000000</color>
+    <color name="fast">#d2b10e</color>
+    <color name="veryFast">#a70008</color>
+    <color name="neutral">#494949</color>
+    <color name="none">#00000000</color>
+</resources>

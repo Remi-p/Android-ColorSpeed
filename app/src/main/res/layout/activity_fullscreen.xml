@@ -1,0 +1,39 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    android:id="@+id/backgroundlayout"
+    tools:context="fr.remiperrot.colorspeed.colorspeed.FullscreenActivity">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+
+    <FrameLayout
+        android:id="@+id/speedLines"
+        android:layout_width="match_parent"
+        android:background="@drawable/speedminus9"
+        android:layout_height="match_parent"></FrameLayout>
+
+    <TextView
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:text="@string/dummy_content"
+        android:textColor="#33b5e5"
+        android:textSize="50sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/none"
+        android:gravity="center"
+        android:text=">"
+        android:layout_gravity="bottom"
+        android:id="@+id/button" />
+
+</FrameLayout>
