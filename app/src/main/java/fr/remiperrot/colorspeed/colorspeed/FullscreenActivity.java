@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -23,10 +25,21 @@ import java.text.DecimalFormat;
  */
 public class FullscreenActivity extends AppCompatActivity {
 
+    Handler mHandler = new Handler();
+
+    Runnable mGpsLost = new Runnable() {
+        @Override
+        public void run() {
+            mSpeedLines.setBackground(getResources().getDrawable(R.drawable.speedlost));
+        }
+    };
+
     FrameLayout frameLayout;
 
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
+
+            mHandler.removeCallbacks(mGpsLost);
 
             float speedKmh = ((float) location.getSpeed()) *3600/1000;
 
@@ -95,6 +108,8 @@ public class FullscreenActivity extends AppCompatActivity {
 
             Log.d("location", location.toString());
             Log.d("speed_9", Float.toString(speedKmh));
+
+            mHandler.postDelayed(mGpsLost, 1000*5);
         }
 
         @Override
@@ -194,7 +209,9 @@ public class FullscreenActivity extends AppCompatActivity {
 
         // Location
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        Log.d("fscreen", "Requestion location updates");
+        Log.d("fscreen", "Request location updates");
+        mContentView.setText("Contacting GPS");
+
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         } catch(SecurityException se) {
@@ -207,6 +224,7 @@ public class FullscreenActivity extends AppCompatActivity {
         super.onPause();
 
         mButton.setOnClickListener(null);
+        mHandler.removeCallbacks(mGpsLost);
 
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
