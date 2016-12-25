@@ -16,17 +16,14 @@ import android.widget.TextView;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.Timer;
-import java.util.TimerTask;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 public class FullscreenActivity extends AppCompatActivity {
 
+    private final String TAG = "ColorSpeedActivity";
+    // Handler for inner Timer
     Handler mHandler = new Handler();
 
+    // Runnable executed by handler
     Runnable mGpsLost = new Runnable() {
         @Override
         public void run() {
@@ -34,8 +31,7 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     };
 
-    FrameLayout frameLayout;
-
+    // Code executed when a speed is received
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
 
@@ -128,31 +124,14 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     };
 
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
+    FrameLayout frameLayout;
 
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
-
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
-    private static final int UI_ANIMATION_DELAY = 300;
-    private final Handler mHideHandler = new Handler();
     private TextView mContentView;
 
     private FrameLayout mSpeedLines;
 
-    private Button mButton;
-
-    private boolean mVisible;
+    private Button mButtonNext;
+    private Button mButtonPrev;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,32 +139,15 @@ public class FullscreenActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_fullscreen);
 
-        mVisible = true;
         mContentView = (TextView) findViewById(R.id.fullscreen_content);
-        mContentView.setText("Test");
 
-        mButton = (Button) findViewById(R.id.button);
+        mButtonNext = (Button) findViewById(R.id.button_next);
+        mButtonPrev = (Button) findViewById(R.id.button_prev);
 
         frameLayout = (FrameLayout) findViewById(R.id.backgroundlayout);
         frameLayout.setBackgroundColor(getResources().getColor(R.color.normal));
 
         mSpeedLines = (FrameLayout) findViewById(R.id.speedLines);
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // http://stackoverflow.com/questions/14910360
-                // http://stackoverflow.com/questions/18800198
-
-//                Intent intent = new Intent("com.android.music.musicservicecommand");
-//                intent.putExtra("command", "next");
-//                startActivity(intent);
-
-                Intent intent = new Intent("com.spotify.mobile.android.ui.widget.NEXT");
-                sendOrderedBroadcast(intent, null);
-                Log.d("fscreen", "supposedly working");
-            }
-        });
     }
 
     @Override
@@ -209,21 +171,38 @@ public class FullscreenActivity extends AppCompatActivity {
 
         // Location
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        Log.d("fscreen", "Request location updates");
-        mContentView.setText("Contacting GPS");
+        Log.d(TAG, "Requesting location updates");
+        mContentView.setText("Searching GPS...");
 
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         } catch(SecurityException se) {
-            Log.d("fscreen", "We don't have access to permission");
+            Log.d(TAG, "We don't have access to permission");
         }
+
+        // Controlling Spotify Player
+        mButtonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent("com.spotify.mobile.android.ui.widget.NEXT");
+                sendOrderedBroadcast(intent, null);
+            }
+        });
+        mButtonPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent("com.spotify.mobile.android.ui.widget.PREVIOUS");
+                sendOrderedBroadcast(intent, null);
+            }
+        });
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        mButton.setOnClickListener(null);
+        mButtonNext.setOnClickListener(null);
+        mButtonPrev.setOnClickListener(null);
         mHandler.removeCallbacks(mGpsLost);
 
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);

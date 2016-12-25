@@ -31,9 +31,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/none"
+        android:textColor="#fff"
         android:gravity="center"
-        android:text=">"
-        android:layout_gravity="bottom"
-        android:id="@+id/button" />
+        android:text="&lt;"
+        android:layout_gravity="bottom|left"
+        android:id="@+id/button_prev" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/none"
+        android:textColor="#fff"
+        android:gravity="center"
+        android:text="&gt;"
+        android:layout_gravity="right|bottom"
+        android:id="@+id/button_next" />
 
 </FrameLayout>
